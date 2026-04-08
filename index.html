@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veri — Asistente de Discovery · Auronix</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --blue-50:  #eff6ff;
+  --blue-100: #dbeafe;
+  --blue-200: #bfdbfe;
+  --blue-300: #93c5fd;
+  --blue-500: #3b82f6;
+  --blue-600: #2563eb;
+  --blue-700: #1d4ed8;
+  --grey-10:  #f9fafb;
+  --grey-50:  #f3f4f6;
+  --grey-100: #e5e7eb;
+  --grey-200: #d1d5db;
+  --grey-300: #d1d5db;
+  --grey-500: #6b7280;
+  --grey-600: #4b5563;
+  --grey-700: #374151;
+  --grey-900: #111827;
+  --white:    #ffffff;
+  --purple-500: #8b5cf6;
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-full: 9999px;
+  --sh-sm: 0 1px 2px rgba(0,0,0,.06);
+  --sh-md: 0 4px 6px -1px rgba(0,0,0,.07), 0 2px 4px -1px rgba(0,0,0,.04);
+  --sh-lg: 0 10px 24px -4px rgba(0,0,0,.09), 0 4px 8px -2px rgba(0,0,0,.04);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--grey-10);
+  color: var(--grey-900);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 56px; background: var(--white);
+  border-bottom: 1px solid var(--grey-100);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  box-shadow: var(--sh-sm);
+}
+.nav-left { display: flex; align-items: center; gap: 16px; }
+.nav-brand { display: flex; align-items: center; gap: 8px; }
+.nav-icon {
+  width: 32px; height: 32px; border-radius: var(--r-md);
+  background: var(--blue-500);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--white); font-size: 13px; font-weight: 700;
+}
+.nav-name { font-size: 15px; font-weight: 700; color: var(--grey-900); letter-spacing: -0.01em; }
+.nav-sep { width: 1px; height: 18px; background: var(--grey-100); }
+.nav-links { display: flex; }
+.nav-links a {
+  padding: 6px 12px; border-radius: var(--r-md);
+  font-size: 13px; font-weight: 500; color: var(--grey-500);
+  text-decoration: none; transition: all .15s;
+}
+.nav-links a:hover { background: var(--grey-50); color: var(--grey-900); }
+.nav-right { display: flex; gap: 8px; align-items: center; }
+.btn-outline {
+  padding: 6px 14px; border-radius: var(--r-md);
+  font-size: 13px; font-weight: 500; color: var(--grey-700);
+  background: var(--white); border: 1px solid var(--grey-300);
+  text-decoration: none; transition: all .15s; cursor: pointer;
+}
+.btn-outline:hover { background: var(--grey-50); border-color: var(--grey-500); }
+.btn-blue {
+  padding: 6px 14px; border-radius: var(--r-md);
+  font-size: 13px; font-weight: 600; color: var(--white);
+  background: var(--blue-500); border: none;
+  text-decoration: none; transition: all .15s; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.btn-blue:hover { background: var(--blue-600); }
+
+/* ── HERO ── */
+.hero {
+  margin-top: 56px;
+  background: var(--white);
+  border-bottom: 1px solid var(--grey-100);
+  padding: 64px 24px 56px;
+}
+.hero-inner {
+  max-width: 1080px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 440px; gap: 56px; align-items: center;
+}
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--blue-50); color: var(--blue-600);
+  border: 1px solid var(--blue-200); border-radius: var(--r-full);
+  padding: 3px 10px; font-size: 11px; font-weight: 600;
+  letter-spacing: .04em; text-transform: uppercase; margin-bottom: 18px;
+}
+.badge-dot { width: 5px; height: 5px; background: var(--blue-500); border-radius: 50%; animation: pulse 2s ease infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+h1 {
+  font-size: 34px; font-weight: 700; line-height: 1.15;
+  letter-spacing: -0.02em; color: var(--grey-900);
+  margin-bottom: 14px;
+}
+h1 span { color: var(--blue-500); }
+.hero-desc { font-size: 15px; color: var(--grey-500); line-height: 1.65; margin-bottom: 10px; max-width: 480px; }
+.hero-tagline {
+  font-size: 12px; color: var(--grey-600); line-height: 1.6;
+  margin-bottom: 28px; padding: 10px 12px;
+  background: var(--grey-50); border-left: 3px solid var(--blue-200);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+}
+.hero-tagline strong { color: var(--blue-600); }
+.hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.hero-actions .btn-blue { font-size: 14px; padding: 8px 18px; }
+.hero-actions .btn-outline { font-size: 14px; padding: 8px 18px; }
+
+/* ── CHAT CARD ── */
+.chat-card {
+  background: var(--white); border: 1px solid var(--grey-100);
+  border-radius: var(--r-xl); box-shadow: var(--sh-lg); overflow: hidden;
+}
+.chat-head {
+  background: var(--grey-50); border-bottom: 1px solid var(--grey-100);
+  padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+}
+.chat-av {
+  width: 28px; height: 28px; border-radius: var(--r-md);
+  background: var(--blue-500);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--white); font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+.chat-head-name { font-size: 13px; font-weight: 600; }
+.chat-head-status { font-size: 11px; color: var(--grey-500); display: flex; align-items: center; gap: 4px; }
+.status-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; }
+.chat-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; min-height: 240px; }
+.cm { display: flex; gap: 8px; align-items: flex-start; opacity: 0; transform: translateY(5px); transition: all .35s ease; }
+.cm.user { justify-content: flex-end; }
+.cm.show { opacity: 1; transform: translateY(0); }
+.cm-av { width: 22px; height: 22px; border-radius: 50%; background: var(--blue-500); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 8px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+.bubble { padding: 8px 12px; border-radius: var(--r-lg); font-size: 12.5px; line-height: 1.55; max-width: 88%; }
+.bubble.v { background: var(--grey-50); color: var(--grey-700); border: 1px solid var(--grey-100); border-top-left-radius: 3px; }
+.bubble.u { background: var(--blue-500); color: var(--white); border-top-right-radius: 3px; }
+.bubble strong { font-weight: 600; }
+.bubble.v strong { color: var(--grey-900); }
+
+/* ── LAYOUT ── */
+.container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+section { padding: 52px 0; }
+.s-white { background: var(--white); border-top: 1px solid var(--grey-100); border-bottom: 1px solid var(--grey-100); }
+.eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--blue-500); margin-bottom: 8px; }
+h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.015em; color: var(--grey-900); margin-bottom: 8px; }
+.s-desc { font-size: 14px; color: var(--grey-500); line-height: 1.65; max-width: 520px; margin-bottom: 28px; }
+
+/* ── WHAT CARDS ── */
+.cards4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+.card {
+  background: var(--white); border: 1px solid var(--grey-100);
+  border-radius: var(--r-lg); padding: 18px;
+  box-shadow: var(--sh-sm); transition: all .18s;
+}
+.card:hover { box-shadow: var(--sh-md); border-color: var(--grey-200); transform: translateY(-1px); }
+.card-ico { width: 36px; height: 36px; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; font-size: 16px; margin-bottom: 12px; }
+.card-ico.bl { background: var(--blue-50); }
+.card-ico.pu { background: #f3e8ff; }
+.card-ico.gr { background: #f0fdf4; }
+.card-ico.or { background: #fff7ed; }
+.card h3 { font-size: 13px; font-weight: 600; color: var(--grey-900); margin-bottom: 5px; }
+.card p { font-size: 12px; color: var(--grey-500); line-height: 1.55; }
+.ai-pill { display: inline-flex; align-items: center; gap: 3px; margin-top: 10px; background: linear-gradient(135deg,var(--purple-500),var(--blue-500)); color: var(--white); border-radius: var(--r-full); padding: 2px 8px; font-size: 10px; font-weight: 600; }
+
+/* ── EXAMPLES ── */
+.ex-section { background: var(--grey-900); padding: 56px 0; }
+.ex-section .eyebrow { color: var(--blue-300); }
+.ex-section h2 { color: var(--white); }
+.ex-section .s-desc { color: rgba(255,255,255,.45); }
+.ex-layout { display: grid; grid-template-columns: 260px 1fr; gap: 24px; margin-top: 32px; align-items: start; }
+.ex-tabs { display: flex; flex-direction: column; gap: 4px; position: sticky; top: 72px; }
+.ex-tab {
+  padding: 12px 14px; border-radius: var(--r-lg); cursor: pointer;
+  border: 1px solid transparent; transition: all .15s; text-align: left;
+}
+.ex-tab:hover { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.08); }
+.ex-tab.active { background: rgba(59,130,246,.12); border-color: rgba(59,130,246,.25); }
+.ex-tab-n { font-size: 10px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: rgba(147,197,253,.6); margin-bottom: 3px; }
+.ex-tab.active .ex-tab-n { color: var(--blue-300); }
+.ex-tab-t { font-size: 12.5px; font-weight: 600; color: rgba(255,255,255,.5); line-height: 1.35; }
+.ex-tab.active .ex-tab-t { color: var(--white); }
+.ex-tab-s { font-size: 11px; color: rgba(255,255,255,.25); margin-top: 2px; }
+.ex-tab.active .ex-tab-s { color: rgba(255,255,255,.4); }
+.ex-panel { display: none; animation: pIn .3s ease; }
+.ex-panel.active { display: block; }
+@keyframes pIn { from{opacity:0;transform:translateX(10px)} to{opacity:1;transform:translateX(0)} }
+.ex-card { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: var(--r-xl); overflow: hidden; }
+.ex-card-head { padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,.06); display: flex; align-items: center; justify-content: space-between; }
+.ex-card-title { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.85); }
+.ex-tag { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: var(--r-full); letter-spacing: .04em; text-transform: uppercase; }
+.t-disc { background: rgba(59,130,246,.2); color: var(--blue-300); }
+.t-val  { background: rgba(16,185,129,.2); color: #6ee7b7; }
+.t-blk  { background: rgba(245,158,11,.2); color: #fcd34d; }
+.t-ap   { background: rgba(139,92,246,.2); color: #c4b5fd; }
+.t-sep  { background: rgba(236,72,153,.2); color: #f9a8d4; }
+.ex-chat { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.xm { display: flex; gap: 8px; align-items: flex-start; opacity: 0; transform: translateY(5px); }
+.xm.user { justify-content: flex-end; }
+.xm.show { opacity: 1; transform: translateY(0); transition: all .35s ease; }
+.xm-av { width: 24px; height: 24px; border-radius: var(--r-md); background: var(--blue-500); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 9px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+.xb { padding: 9px 13px; border-radius: var(--r-lg); font-size: 12.5px; line-height: 1.55; max-width: 86%; }
+.xb.v { background: rgba(255,255,255,.07); color: rgba(255,255,255,.8); border: 1px solid rgba(255,255,255,.08); border-top-left-radius: 3px; }
+.xb.u { background: var(--blue-600); color: var(--white); border-top-right-radius: 3px; }
+.xb strong { font-weight: 600; }
+.xb.v strong { color: var(--white); }
+.ex-card-foot { padding: 10px 18px; border-top: 1px solid rgba(255,255,255,.06); display: flex; align-items: center; justify-content: space-between; }
+.ex-insight { font-size: 11px; color: rgba(255,255,255,.3); font-style: italic; }
+.ex-replay { font-size: 11px; color: var(--blue-300); background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 3px; padding: 3px 8px; border-radius: var(--r-full); transition: all .15s; }
+.ex-replay:hover { background: rgba(59,130,246,.15); }
+.chips-wrap { margin-top: 20px; }
+.chips-label { font-size: 10px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: rgba(255,255,255,.25); margin-bottom: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: var(--r-full); padding: 5px 12px; font-size: 11.5px; color: rgba(255,255,255,.55); cursor: pointer; transition: all .18s; font-family: var(--font); }
+.chip:hover { background: rgba(59,130,246,.15); border-color: rgba(59,130,246,.3); color: var(--white); transform: translateY(-1px); }
+
+/* ── STEPS ── */
+.steps-wrap { background: var(--grey-900); border-radius: var(--r-xl); padding: 40px; }
+.steps-wrap .eyebrow { color: var(--blue-300); }
+.steps-wrap h2 { color: var(--white); margin-bottom: 28px; }
+.steps3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; }
+.step { padding: 20px; border-top: 1px solid rgba(255,255,255,.08); position: relative; }
+.step:not(:last-child)::after { content: '→'; position: absolute; right: -8px; top: 50%; color: rgba(255,255,255,.15); font-size: 16px; transform: translateY(-50%); }
+.step-n { font-size: 10px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--blue-300); margin-bottom: 8px; }
+.step h4 { font-size: 13px; font-weight: 600; color: var(--white); margin-bottom: 6px; }
+.step p { font-size: 12px; color: rgba(255,255,255,.4); line-height: 1.6; }
+
+/* ── EXPECT ── */
+.expect2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.exp-panel { background: var(--white); border: 1px solid var(--grey-100); border-radius: var(--r-lg); padding: 20px; box-shadow: var(--sh-sm); }
+.exp-head { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--grey-100); }
+.exp-ico { width: 26px; height: 26px; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; font-size: 12px; }
+.exp-ico.gr { background: #f0fdf4; }
+.exp-ico.gy { background: var(--grey-50); }
+.exp-panel h3 { font-size: 12px; font-weight: 700; letter-spacing: .02em; }
+.exp-panel.good h3 { color: #16a34a; }
+.exp-panel.neutral h3 { color: var(--grey-500); }
+.exp-items { display: flex; flex-direction: column; gap: 6px; }
+.exp-item { display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px; border-radius: var(--r-md); font-size: 12.5px; line-height: 1.5; }
+.exp-panel.good .exp-item { background: #f0fdf4; color: #166534; }
+.exp-panel.neutral .exp-item { background: var(--grey-50); color: var(--grey-600); }
+
+/* ── FEEDBACK ── */
+.fb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+.fb-steps { display: flex; flex-direction: column; gap: 10px; }
+.fb-step { background: var(--white); border: 1px solid var(--grey-100); border-radius: var(--r-lg); padding: 14px; display: flex; gap: 10px; box-shadow: var(--sh-sm); transition: all .18s; }
+.fb-step:hover { box-shadow: var(--sh-md); transform: translateY(-1px); }
+.fb-n { width: 22px; height: 22px; background: var(--blue-500); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+.fb-step h4 { font-size: 12.5px; font-weight: 600; margin-bottom: 3px; }
+.fb-step p { font-size: 12px; color: var(--grey-500); line-height: 1.55; }
+.info-box { background: var(--blue-50); border: 1px solid var(--blue-200); border-radius: var(--r-lg); padding: 16px; margin-bottom: 14px; }
+.info-box h4 { font-size: 12.5px; font-weight: 600; color: var(--blue-700); margin-bottom: 5px; }
+.info-box p { font-size: 12px; color: var(--blue-600); line-height: 1.6; }
+.info-box a { color: var(--blue-700); font-weight: 600; }
+.ver-table { width: 100%; border-collapse: collapse; }
+.ver-table th { text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--grey-500); padding: 7px 10px; background: var(--grey-50); border-bottom: 1px solid var(--grey-100); }
+.ver-table td { padding: 9px 10px; font-size: 12px; color: var(--grey-700); border-bottom: 1px solid var(--grey-50); }
+.ver-badge { display: inline-block; padding: 1px 7px; border-radius: var(--r-full); font-size: 10px; font-weight: 600; background: var(--blue-50); color: var(--blue-600); }
+
+/* ── WARNING BOX ── */
+.warn-box { background: #fffbeb; border: 1px solid #fcd34d; border-radius: var(--r-lg); padding: 14px 16px; margin-bottom: 24px; display: flex; gap: 10px; align-items: flex-start; }
+.warn-box p { font-size: 12.5px; color: #92400e; line-height: 1.6; }
+.warn-box strong { font-weight: 600; }
+
+/* ── CTA ── */
+.cta-box { background: var(--blue-500); border-radius: var(--r-xl); padding: 44px; text-align: center; position: relative; overflow: hidden; }
+.cta-box::before { content: ''; position: absolute; top: -30px; right: -30px; width: 150px; height: 150px; border-radius: 50%; background: rgba(255,255,255,.06); }
+.cta-box h2 { color: var(--white); font-size: 24px; margin-bottom: 10px; }
+.cta-box p { color: rgba(255,255,255,.72); font-size: 14px; margin-bottom: 24px; }
+.btn-white { background: var(--white); color: var(--blue-600); border: none; padding: 9px 22px; border-radius: var(--r-md); font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; transition: all .15s; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+.btn-white:hover { opacity: .95; transform: translateY(-1px); }
+
+/* ── FOOTER ── */
+footer { background: var(--white); border-top: 1px solid var(--grey-100); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; }
+.ft-left { display: flex; align-items: center; gap: 8px; }
+.ft-ico { width: 22px; height: 22px; background: var(--blue-500); border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 9px; font-weight: 700; }
+footer p { font-size: 12px; color: var(--grey-500); }
+.ft-links a { font-size: 12px; color: var(--grey-500); text-decoration: none; margin-left: 16px; }
+.ft-links a:hover { color: var(--blue-500); }
+
+/* ── REVEAL ── */
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity .5s ease, transform .5s ease; }
+.reveal.vis { opacity: 1; transform: translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  nav { padding: 0 16px; }
+  .nav-links { display: none; }
+  .hero { padding: 40px 16px 36px; }
+  .hero-inner { grid-template-columns: 1fr; }
+  .chat-card { display: none; }
+  h1 { font-size: 26px; }
+  .container { padding: 0 16px; }
+  .cards4 { grid-template-columns: repeat(2,1fr); }
+  .ex-layout { grid-template-columns: 1fr; }
+  .ex-tabs { flex-direction: row; overflow-x: auto; position: static; gap: 6px; }
+  .ex-tab { min-width: 150px; flex-shrink: 0; }
+  .steps3 { grid-template-columns: 1fr; }
+  .step::after { display: none; }
+  .expect2, .fb-grid { grid-template-columns: 1fr; }
+  .steps-wrap, .cta-box { padding: 28px 20px; }
+  footer { flex-direction: column; gap: 10px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <div class="nav-brand">
+      <div class="nav-icon">V</div>
+      <span class="nav-name">Veri</span>
+    </div>
+    <div class="nav-sep"></div>
+    <div class="nav-links">
+      <a href="#que-es">Qué es</a>
+      <a href="#ejemplos">Ejemplos</a>
+      <a href="#como-usar">Cómo usar</a>
+      <a href="#feedback">Feedback</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a href="https://chat.google.com/room/AAQAk_fVGOo?cls=7" target="_blank" class="btn-outline">Canal de feedback</a>
+    <a href="https://gemini.google.com/gem/1befObIDJTvAGYuakprCPHYHOPe9t5-Pp?usp=sharing" target="_blank" class="btn-blue">
+      Abrir Veri
+      <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="badge"><div class="badge-dot"></div>Piloto interno · Auronix</div>
+      <h1>Tu asistente de<br><span>discovery</span> de negocios</h1>
+      <p class="hero-desc">Veri ayuda al researcher a entender el problema real del cliente — antes de que Delivery diseñe cualquier solución. No rellena campos: te hace pensar.</p>
+      <p class="hero-tagline"><strong>Veri</strong> viene de <em>verificar</em> — su trabajo es verificar que el problema declarado es el problema real, no la solución que el cliente ya imaginó.</p>
+      <div class="hero-actions">
+        <a href="https://gemini.google.com/gem/1befObIDJTvAGYuakprCPHYHOPe9t5-Pp?usp=sharing" target="_blank" class="btn-blue">
+          Abrir Veri en Gemini
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#ejemplos" class="btn-outline">Ver ejemplos</a>
+      </div>
+    </div>
+    <div class="chat-card">
+      <div class="chat-head">
+        <div class="chat-av">V</div>
+        <div>
+          <div class="chat-head-name">Veri</div>
+          <div class="chat-head-status"><div class="status-dot"></div>Activa</div>
+        </div>
+      </div>
+      <div class="chat-body" id="hc">
+        <div class="cm user"><div class="bubble u">El cliente quiere integrar WhatsApp con su sistema de atención.</div></div>
+        <div class="cm"><div class="cm-av">V</div><div class="bubble v">Eso describe una solución, no un problema. ¿Qué pasa hoy que los hace querer ese canal? ¿A quién le duele y cuánto?</div></div>
+        <div class="cm user"><div class="bubble u">Los banqueros atienden por WhatsApp personal y no queda registrado.</div></div>
+        <div class="cm"><div class="cm-av">V</div><div class="bubble v">Hay al menos <strong>dos problemas distintos</strong>: uno regulatorio (sin trazabilidad) y uno de seguridad (datos sensibles expuestos). Separémoslos antes de hablar de soluciones.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUÉ ES -->
+<section id="que-es">
+  <div class="container">
+    <div class="reveal">
+      <div class="eyebrow">Qué es Veri</div>
+      <h2>Un pensador lateral, no un formulario inteligente</h2>
+      <p class="s-desc">Entrenada para el proceso de discovery de Auronix. Separa el dolor real de las soluciones que el cliente ya imaginó, genera hipótesis fundadas en la industria, y estructura el Initial Request con lo que tenés.</p>
+    </div>
+    <div class="cards4 reveal">
+      <div class="card"><div class="card-ico bl">🔍</div><h3>Detecta el problema real</h3><p>Distingue entre lo que el cliente dice que necesita y el problema de negocio que tiene de verdad.</p><span class="ai-pill">✦ AI</span></div>
+      <div class="card"><div class="card-ico pu">🌿</div><h3>Genera hipótesis fundadas</h3><p>Propone causas probables basadas en el contexto de la industria — no relleno genérico.</p><span class="ai-pill">✦ AI</span></div>
+      <div class="card"><div class="card-ico gr">⚡</div><h3>Detecta inconsistencias</h3><p>Señala cuando algo que dijiste en un momento contradice lo que dijiste en otro.</p></div>
+      <div class="card"><div class="card-ico or">🗂</div><h3>Genera el Initial Request</h3><p>Cuando el discovery madura, arma el IR con código de colores y te dice qué actualizar en el Excel AS-IS.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- EJEMPLOS -->
+<section id="ejemplos" class="ex-section">
+  <div class="container">
+    <div class="reveal">
+      <div class="eyebrow">Ejemplos reales</div>
+      <h2>Mirá cómo trabaja Veri en diferentes situaciones</h2>
+      <p class="s-desc">Seleccioná una situación. Podés copiar los prompts y usarlos directamente.</p>
+    </div>
+    <div class="ex-layout">
+      <div class="ex-tabs">
+        <div class="ex-tab active" onclick="switchEx(0)"><div class="ex-tab-n">01</div><div class="ex-tab-t">Primer contacto con un proyecto nuevo</div><div class="ex-tab-s">Cómo arrancar desde cero</div></div>
+        <div class="ex-tab" onclick="switchEx(1)"><div class="ex-tab-n">02</div><div class="ex-tab-t">El cliente ya trajo una solución</div><div class="ex-tab-s">Separar solución de problema</div></div>
+        <div class="ex-tab" onclick="switchEx(2)"><div class="ex-tab-n">03</div><div class="ex-tab-t">Hay un blocker técnico</div><div class="ex-tab-s">Qué hacer cuando algo bloquea</div></div>
+        <div class="ex-tab" onclick="switchEx(3)"><div class="ex-tab-n">04</div><div class="ex-tab-t">¿Cerramos ya el IR?</div><div class="ex-tab-s">Cuándo converger y cómo</div></div>
+        <div class="ex-tab" onclick="switchEx(4)"><div class="ex-tab-n">05</div><div class="ex-tab-t">Síntomas mezclados</div><div class="ex-tab-s">Separar problemas distintos</div></div>
+      </div>
+      <div>
+        <!-- 0 -->
+        <div class="ex-panel active" id="ep0">
+          <div class="ex-card">
+            <div class="ex-card-head"><span class="ex-card-title">Primer contacto</span><span class="ex-tag t-disc">Discovery</span></div>
+            <div class="ex-chat" id="ec0">
+              <div class="xm user"><div class="xb u">Acabo de tener una primera reunión con un banco. Quieren mejorar su canal de atención al cliente. ¿Por dónde empezamos?</div></div>
+              <div class="xm"><div class="xm-av">V</div><div class="xb v">Antes de arrancar: ¿cómo se llama el proyecto y cuál es el cliente exacto?</div></div>
+              <div class="xm user"><div class="xb u">Proyecto "Canal Digital Preferente", cliente Banco XYZ, área de Contact Center.</div></div>
+              <div class="xm"><div class="xm-av">V</div><div class="xb v">"Mejorar el canal" es un objetivo, no un problema. Para arrancar bien necesito entender <strong>qué duele hoy</strong>. ¿Qué te contaron que no está funcionando? ¿Quién lo dijo y con qué palabras exactas?</div></div>
+              <div class="xm user"><div class="xb u">El director de CC dijo que los tiempos de respuesta son muy altos y los clientes se quejan.</div></div>
+              <div class="xm"><div class="xm-av">V</div><div class="xb v">Bien — ahí hay al menos <strong>dos candidatos separados</strong>: tiempos de respuesta altos y quejas de clientes. Pueden tener causas distintas. Empecemos: ¿cuánto es "muy alto"? ¿Tienen un número?</div></div>
+            </div>
+            <div class="ex-card-foot"><span class="ex-insight">Veri arranca separando síntomas antes de ir a causas.</span><button class="ex-replay" onclick="replayEx(0)">↺ Repetir</button></div>
+          </div>
+          <div class="chips-wrap"><div class="chips-label">Probalo vos — copiá y pegá en Veri</div><div class="chips">
+            <div class="chip" onclick="copyChip(this)">"Acabo de tener una primera reunión con [cliente]. Me contaron que [problema vago]. ¿Por dónde empezamos?"</div>
+            <div class="chip" onclick="copyChip(this)">"Tengo las notas de la reunión. Te las paso para que me digas qué falta."</div>
+          </div></div>
+        </div>
+        <!-- 1 -->
+        <div class="ex-panel" id="ep1">
+          <div class="ex-card">
+            <div class="ex-card-head"><span class="ex-card-title">El cliente ya trajo una solución</span><span class="ex-tag t-val">Validación</span></div>
+            <div class="ex-chat" id="ec1">
+              <div class="xm user"><div class="xb u">El cliente quiere que los agentes puedan ver el historial completo del cliente antes de atender cada llamada.</div></div>
+              <div class="xm"><div class="xm-av">V</div><div class="xb v">Eso describe un comportamiento deseado del sistema. Aplicá la prueba: <strong>¿qué pasaría si ese historial no existiera?</strong> ¿Qué dolor concreto tendría el agente o el cliente?</div></div>
+              <div class="xm user"><div class="xb u">El agente llegaría sin contexto y el cliente tendría que repetir su situación cada vez.</div></div>
+              <div class="xm"><div class="xm-av">V</div><div class="xb v">Ese es el problema real: <strong>el agente no tiene contexto al iniciar la atención</strong>, generando fricción y repetición innecesaria. El historial unificado es una hipótesis de solución — puede haber otras. Lo registro en "expectativas del cliente" y trabajamos el problema desde ahí.</div></div>
+            </div>
+            <div class="ex-card-foot"><span class="ex-insight">Veri convierte soluciones imaginadas en problemas reales.</span><button class="ex-replay" onclick="replayEx(1)">↺ Repetir</button></div>
+          </div>
+          <div class="chips-wrap"><div class="chips-label">Probalo vos</div><div class="chips">
+            <div class="chip" onclick="copyChip(this)">"El cliente quiere [funcionalidad]. ¿Tiene sentido?"</div>
+            <div class="chip" onclick="copyChip(this)">"Me pidieron que [requerimiento técnico]. ¿Qué problema resuelve?"</div>
+          </div></div>
+        </div>
+        <!-- 2 -->
+        <div class="ex-panel" id="ep2">
+          <div class="ex-card">
+            <div class="ex-card-head"><span class="ex-card-title">Hay un blocker técnico</span><span class="ex-tag t-blk">Blocker</span></div>
+            <div class="ex-chat" id="ec2">
+              <div class="xm user"><div class="xb u">El equipo técnico dice que lo que el cliente pide no es posible con la tecnología disponible hoy.</div></div>
+              <div class="xm"><div class="xm-av">V</div><div class="xb v">Importante. Separemos: el blocker afecta la <strong>solución que el cliente imaginó</strong>, no el <strong>problema de negocio</strong>. ¿Cuál era el problema que esa solución intentaba resolver?</div></div>
+              <div class="xm user"><div class="xb u">Que los datos sensibles no queden expuestos en el historial del chat.</div></div>
+              <div class="xm"><div class="xm-av">V</div><div class="xb v">Bien. El problema es <strong>datos financieros sensibles expuestos sin control de acceso</strong>. La solución técnica era una hipótesis. Si no es viable, Delivery puede explorar alternativas. El problema sigue siendo válido — solo necesita otra solución. ¿Registramos el blocker y documentamos las alternativas posibles?</div></div>
+            </div>
+            <div class="ex-card-foot"><span class="ex-insight">Veri distingue blockers de soluciones vs blockers de problemas.</span><button class="ex-replay" onclick="replayEx(2)">↺ Repetir</button></div>
+          </div>
+          <div class="chips-wrap"><div class="chips-label">Probalo vos</div><div class="chips">
+            <div class="chip" onclick="copyChip(this)">"El equipo técnico dice que [X] no es posible. ¿Qué hacemos?"</div>
+            <div class="chip" onclick="copyChip(this)">"La solución que pensábamos no funciona. ¿Cómo seguimos?"</div>
+          </div></div>
+        </div>
+        <!-- 3 -->
+        <div class="ex-panel" id="ep3">
+          <div class="ex-card">
+            <div class="ex-card-head"><span class="ex-card-title">¿Cerramos ya el IR?</span><span class="ex-tag t-ap">Convergencia</span></div>
+            <div class="ex-chat" id="ec3">
+              <div class="xm user"><div class="xb u">Ya tenemos suficiente. Mandemos el Initial Request a Delivery.</div></div>
+              <div class="xm"><div class="xm-av">V</div><div class="xb v">Antes de cerrar — revisemos. Tenemos 3 problemas confirmados pero hay preguntas abiertas que cambiarían el diseño: ¿cuántos clientes tiene el segmento? ¿Hay WABA activa? ¿Quién firma el LR? Sin esos datos, Delivery arranca con supuestos.</div></div>
+              <div class="xm user"><div class="xb u">¿Y si mandamos lo que tenemos y completamos después?</div></div>
+              <div class="xm"><div class="xm-av">V</div><div class="xb v">Podés. Te propongo esto: armamos el IR marcando en <strong>🔴 rojo</strong> lo que falta, con las preguntas concretas y a quién hacérselas. Así Delivery sabe exactamente los riesgos. ¿Arrancamos con eso? También te indico qué completar en el Excel AS-IS.</div></div>
+            </div>
+            <div class="ex-card-foot"><span class="ex-insight">Veri no bloquea el cierre — lo hace consciente.</span><button class="ex-replay" onclick="replayEx(3)">↺ Repetir</button></div>
+          </div>
+          <div class="chips-wrap"><div class="chips-label">Probalo vos</div><div class="chips">
+            <div class="chip" onclick="copyChip(this)">"¿Tenemos suficiente para mandar a Delivery?"</div>
+            <div class="chip" onclick="copyChip(this)">"Revisá lo que tenemos y decime qué riesgos ve Delivery si arranca ahora."</div>
+            <div class="chip" onclick="copyChip(this)">"Armame el borrador del Initial Request con lo que tenemos."</div>
+          </div></div>
+        </div>
+        <!-- 4 -->
+        <div class="ex-panel" id="ep4">
+          <div class="ex-card">
+            <div class="ex-card-head"><span class="ex-card-title">Síntomas mezclados</span><span class="ex-tag t-sep">Separación</span></div>
+            <div class="ex-chat" id="ec4">
+              <div class="xm user"><div class="xb u">El cliente tiene un problema grande: las conversaciones no se registran, los datos quedan expuestos, y cuando el empleado se va se pierde todo el historial.</div></div>
+              <div class="xm"><div class="xm-av">V</div><div class="xb v">Ahí hay <strong>tres síntomas distintos</strong>, no uno. Cada uno tiene dueño e impacto diferente. Los separo:<br><br><strong>P1</strong> — Sin registro → riesgo regulatorio (compliance)<br><strong>P2</strong> — Datos expuestos → riesgo de seguridad<br><strong>P3</strong> — Historial ligado al empleado → riesgo de continuidad<br><br>¿Cuál de los tres le duele más al cliente hoy?</div></div>
+              <div class="xm user"><div class="xb u">El de compliance es lo más urgente — hay una auditoría en puerta.</div></div>
+              <div class="xm"><div class="xm-av">V</div><div class="xb v">Perfecto. Eso confirma P1 como driver principal. Los otros dos son reales pero secundarios. ¿Cuándo es la auditoría? Eso define el timing del proyecto.</div></div>
+            </div>
+            <div class="ex-card-foot"><span class="ex-insight">Veri separa síntomas en problemas independientes con prioridad propia.</span><button class="ex-replay" onclick="replayEx(4)">↺ Repetir</button></div>
+          </div>
+          <div class="chips-wrap"><div class="chips-label">Probalo vos</div><div class="chips">
+            <div class="chip" onclick="copyChip(this)">"El cliente tiene varios problemas mezclados. Te los cuento todos."</div>
+            <div class="chip" onclick="copyChip(this)">"No sé cuántos problemas son en realidad. Ayudame a separar."</div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CÓMO USAR -->
+<section id="como-usar" class="s-white">
+  <div class="container">
+    <div class="reveal">
+      <div class="eyebrow">Cómo usar</div>
+      <h2>Tres pasos para empezar hoy</h2>
+    </div>
+    <div class="steps-wrap reveal">
+      <div class="steps3">
+        <div class="step"><div class="step-n">Paso 01</div><h4>Abrí el GEM de Veri</h4><p>Entrá a Gemini y buscá el GEM "Veri Agent". Cada proyecto nuevo es una conversación nueva.</p></div>
+        <div class="step"><div class="step-n">Paso 02</div><h4>Contale lo que sabés</h4><p>Pegá transcripciones, notas, o describí lo que el cliente te dijo. Sin estructura requerida.</p></div>
+        <div class="step"><div class="step-n">Paso 03</div><h4>Dejate preguntar</h4><p>Veri hace preguntas. Si no sabés algo, decilo — eso también es información útil.</p></div>
+      </div>
+    </div>
+
+    <div class="warn-box reveal" style="margin-top:24px">
+      <span style="font-size:16px;flex-shrink:0">⚠️</span>
+      <p><strong>Importante al usar el GEM:</strong> antes de empezar, verificá que el botón "Herramientas" en la barra del chat no tenga ninguna herramienta activada — especialmente Google Workspace. Si está activado, Veri puede mezclar información de documentos o chats anteriores que no tienen que ver con el proyecto.</p>
+    </div>
+  </div>
+</section>
+
+<!-- QUÉ ESPERAR -->
+<section id="que-esperar">
+  <div class="container">
+    <div class="reveal">
+      <div class="eyebrow">Qué esperar</div>
+      <h2>Honestidad sobre lo que Veri puede y no puede hacer</h2>
+    </div>
+    <div class="expect2 reveal">
+      <div class="exp-panel good">
+        <div class="exp-head"><div class="exp-ico gr">✓</div><h3>Podés esperar esto</h3></div>
+        <div class="exp-items">
+          <div class="exp-item"><span>🔎</span>Preguntas que te hacen ver ángulos no considerados.</div>
+          <div class="exp-item"><span>💡</span>Hipótesis de causas fundadas en el contexto de la industria.</div>
+          <div class="exp-item"><span>✂️</span>Separación clara entre dolor real y solución imaginada por el cliente.</div>
+          <div class="exp-item"><span>⚠️</span>Detección de inconsistencias en lo que le contás.</div>
+          <div class="exp-item"><span>📄</span>Initial Request estructurado con código de colores 🟢🟡🔴.</div>
+          <div class="exp-item"><span>📊</span>Indicación de qué completar en el Excel AS-IS.</div>
+        </div>
+      </div>
+      <div class="exp-panel neutral">
+        <div class="exp-head"><div class="exp-ico gy">·</div><h3>No esperes esto</h3></div>
+        <div class="exp-items">
+          <div class="exp-item"><span>🚫</span>Que reemplace la reunión con el cliente — trabaja con lo que traés.</div>
+          <div class="exp-item"><span>🚫</span>Que diseñe la solución — eso le corresponde a Delivery.</div>
+          <div class="exp-item"><span>🚫</span>Que invente datos — si no hay info, te dice cómo conseguirla.</div>
+          <div class="exp-item"><span>🚫</span>Que sea infalible — tu juicio sigue siendo el filtro.</div>
+          <div class="exp-item"><span>🚫</span>Que use info de otros proyectos o chats anteriores.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEEDBACK -->
+<section id="feedback" class="s-white">
+  <div class="container">
+    <div class="reveal">
+      <div class="eyebrow">Piloto interno</div>
+      <h2>Tu feedback construye la próxima versión</h2>
+      <p class="s-desc">Veri está en piloto. Cada observación va directo a mejorar el agente.</p>
+    </div>
+    <div class="fb-grid reveal">
+      <div class="fb-steps">
+        <div class="fb-step"><div class="fb-n">1</div><div><h4>Probá con un proyecto real</h4><p>Un proyecto actual o uno viejo con transcripciones. Cuanto más real, más útil.</p></div></div>
+        <div class="fb-step"><div class="fb-n">2</div><div><h4>Reportá lo que no funcionó</h4><p>¿Se perdió en un requerimiento técnico? ¿Agrupó problemas que debían estar separados? ¿Alucinó algo?</p></div></div>
+        <div class="fb-step"><div class="fb-n">3</div><div><h4>Reportá lo que sí funcionó</h4><p>¿Te hizo una pregunta clave que no habías pensado? Eso también sirve para saber qué proteger.</p></div></div>
+        <div class="fb-step"><div class="fb-n">4</div><div><h4>Cada ciclo mejora el agente</h4><p>Carlos analiza el feedback y actualiza el prompt. Evolución rápida en las primeras semanas.</p></div></div>
+      </div>
+      <div>
+        <div class="info-box">
+          <h4>Canal de feedback</h4>
+          <p>Espacio dedicado en Google Chat para el piloto. Reportá sin filtro. <a href="https://chat.google.com/room/AAQAk_fVGOo?cls=7" target="_blank">Ir al canal →</a></p>
+        </div>
+        <div class="card">
+          <h3 style="font-size:11px;color:var(--grey-500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Log de versiones</h3>
+          <table class="ver-table">
+            <thead><tr><th>Versión</th><th>Cambio principal</th></tr></thead>
+            <tbody>
+              <tr><td><span class="ver-badge">v8</span></td><td>Prompt base limpio + módulo Finance separado</td></tr>
+              <tr><td><span class="ver-badge">v7</span></td><td>Genera IR y referencia al Excel AS-IS</td></tr>
+              <tr><td><span class="ver-badge">v6</span></td><td>Cierre de ciclo + tres niveles dato/hipótesis/inferencia</td></tr>
+              <tr><td><span class="ver-badge">v5</span></td><td>Integridad de datos — sin fuentes externas</td></tr>
+              <tr><td><span class="ver-badge">v4</span></td><td>Separación de síntomas desde el primer análisis</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section>
+  <div class="container">
+    <div class="cta-box reveal">
+      <h2>¿Listo para probar a Veri en un proyecto real?</h2>
+      <p>Abrí el GEM, pegá una transcripción, y contanos cómo te fue.</p>
+      <a href="https://gemini.google.com/gem/1befObIDJTvAGYuakprCPHYHOPe9t5-Pp?usp=sharing" target="_blank" class="btn-white">
+        Abrir Veri en Gemini
+        <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="ft-left">
+    <div class="ft-ico">A</div>
+    <p>Veri · Auronix · Piloto interno 2026</p>
+  </div>
+  <div class="ft-links">
+    <a href="#que-es">Qué es</a>
+    <a href="#ejemplos">Ejemplos</a>
+    <a href="#feedback">Feedback</a>
+    <a href="https://gemini.google.com/gem/1befObIDJTvAGYuakprCPHYHOPe9t5-Pp?usp=sharing" target="_blank">Abrir Veri →</a>
+  </div>
+</footer>
+
+<script>
+// Hero chat
+setTimeout(()=>{
+  const msgs = document.querySelectorAll('#hc .cm');
+  msgs.forEach((m,i) => setTimeout(()=>m.classList.add('show'), i*600));
+}, 400);
+
+// Example switching
+function switchEx(idx){
+  document.querySelectorAll('.ex-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.ex-panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+  const panel = document.getElementById('ep'+idx);
+  if(!panel.dataset.played){ panel.dataset.played='1'; playEx(idx); }
+}
+function playEx(idx){
+  const msgs = document.querySelectorAll('#ec'+idx+' .xm');
+  msgs.forEach((m,i)=>setTimeout(()=>m.classList.add('show'), i*480+150));
+}
+function replayEx(idx){
+  document.querySelectorAll('#ec'+idx+' .xm').forEach(m=>m.classList.remove('show'));
+  setTimeout(()=>playEx(idx),80);
+}
+setTimeout(()=>playEx(0), 500);
+
+// Copy chip
+function copyChip(el){
+  const text = el.textContent.replace(/^"|"$/g,'').trim();
+  navigator.clipboard.writeText(text).catch(()=>{});
+  const orig = el.textContent;
+  el.textContent = '✓ Copiado';
+  el.style.background='rgba(16,185,129,.2)';
+  el.style.borderColor='rgba(16,185,129,.4)';
+  el.style.color='#6ee7b7';
+  setTimeout(()=>{ el.textContent=orig; el.style.background=el.style.borderColor=el.style.color=''; }, 1500);
+}
+
+// Scroll reveal
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('vis'); });
+}, {threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
